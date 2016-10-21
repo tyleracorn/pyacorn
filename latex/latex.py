@@ -5,7 +5,8 @@ LaTeX functions for converting data to LaTeX formats.
 """
 
 
-def latex_table(df, table_package='tabu', table_width=1, cell_align='c', float_prec=False):
+def latex_table(df, table_package='tabu', table_width=1, cell_align='c', float_prec=False,
+                replace_dict={'_': ' ', '-': ' '}):
     '''A simple function for taking a dataframe and printing out a latex table. Then just Copy and Paste
     into LaTeX!!!!!!
 
@@ -18,17 +19,19 @@ def latex_table(df, table_package='tabu', table_width=1, cell_align='c', float_p
     cell_align (str): can be either right ('r'), middle ('m'), left ('l') or centered ('c')
     float_prec(int): If you pass it a int it will evaluate each cell and if it is a float
         it will set the float precision in print out
+    replace_dict (dict): A dictionary of string characters to replace so that LaTeX likes the
+        output more.
 
     '''
     # SETUP TABLE
-    print('%%%%%%%%%%%%%%%%%')
+    print('%' * 17)
     print('\\begin{table}[htb] % Table')
     print('\\centering')
     # SETUP TABULAR
     ncol = len(df.columns)
 
     # SETUP the begin tabu or begin tabular line
-    line_array = list([''.ljust(4)])
+    line_array = list([' ' * 4])
     if table_package.lower() == 'tabu':
         line_array.append('\\begin{tabu}')
         line_array.append(' to {width}\\textwidth'.format(width=table_width))
@@ -58,15 +61,21 @@ def latex_table(df, table_package='tabu', table_width=1, cell_align='c', float_p
     print(''.join(line_array))
 
     # PRINT COLUMN HEADERS
+    line_array = list([' ' * 8])
     if table_package.lower() == 'tabu':
-        print('        \\tabucline[1pt]{-}')
+        line_array.append('\\tabucline[1pt]{-}')
     else:
-        print('        \\hline')
+        line_array.append('\\hline')
+    print(''.join(line_array))
 
-    line_array = list([''.ljust(7)])
+    line_array = list([' ' * 8])
     for col in df.columns:
-        line_array.append(' \\textbf{')
-        line_array.append('{}'.format(col))
+        line_array.append('\\textbf{')
+        # Search column string and replace characters to make LaTeX happy
+        column_string = '{}'.format(col)
+        for key in replace_dict:
+            column_string = column_string.replace(key, replace_dict[key])
+        line_array.append(column_string)
         line_array.append('} ')
         line_array.append('&')
     del line_array[-1]
@@ -75,29 +84,47 @@ def latex_table(df, table_package='tabu', table_width=1, cell_align='c', float_p
     # PRINT ROWS
     for idx in df.iterrows():
         # PRINT ROWS
-        line_array = list(['        \\hline'])
+        line_array = list([' ' * 8])
+        line_array.append('\\hline')
         for col in df.columns:
             value = df[col][idx[0]]
             if float_prec:
                 if isinstance(value, (float)):
                     line_array.append(' {:0.{}f}'.format(value, float_prec))
+                elif isinstance(value, (str)):
+                    # Search string and replace characters
+                    value_string = ' {}'.format(value)
+                    for key in replace_dict:
+                        value_string = value_string.replace(key, replace_dict[key])
+                    line_array.append(value_string)
                 else:
                     line_array.append(' {0}'.format(value))
             else:
-                line_array.append(' {0}'.format(value))
+                if isinstance(value, (str)):
+                    # Search string and replace characters
+                    value_string = ' {}'.format(value)
+                    for key in replace_dict:
+                        value_string = value_string.replace(key, replace_dict[key])
+                    line_array.append(value_string)
+                else:
+                    line_array.append(' {0}'.format(value))
             line_array.append(' &')
         del line_array[-1]
         line_array.append('\\\\')
         print(''.join(line_array))
+
+    # PRINT END
+    line_array = list([' ' * 8])
     if table_package.lower() == 'tabu':
-        print('        \\tabucline[1pt]{-}')
+        line_array.append('\\tabucline[1pt]{-}')
+        print(''.join(line_array))
         print('    \\end{tabu}')
     else:
-        print('        \\hline')
+        line_array.append('\\hline')
+        print(''.join(line_array))
         print('    \\end{tabular}')
-    # PRINT END
 
     print('\\caption[SmallCapt]{LongCaption}')
     print('\\label{tab:tab_key}')
     print('\\end{table}')
-    print('%%%%%%%%%%%%%%%%%')
+    print('%' * 17)

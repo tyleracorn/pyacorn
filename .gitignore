@@ -1,0 +1,52 @@
+# Examples and compiled zip files except for the big pygeostat example
+
+# Standalone code
+standalone/
+
+# Compiled python modules.
+*.pyc
+*.pyd
+.cache
+
+# F2PY-ifort tmp directories
+tmp/
+
+# For individual fortran compiler definitions
+pygeostat/fortran/userpaths.py
+
+# Compiled fortran libraries
+*.a
+*.mod
+*.lib
+resource/lapack_solve_intel.lib
+
+# Setuptools distribution folder.
+/dist/
+/build/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+/__pycache__
+/latex/_pycache__
+
+# Documentation build folder
+/doc/_build/
+/doc/pygeostat.log
+
+# pycharm ide project folder
+/.idea
+
+# Documentation in root
+*.docx
+
+# All standalone features
+*.exe
+*.htm
+*.obj
+*__genmod*
+*.pdb
+
+# Documentation deployment script
+/doc/deploy.sh
+
+
