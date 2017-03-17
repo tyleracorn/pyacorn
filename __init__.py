@@ -5,3 +5,4 @@ Started October 2016
 '''
 from .latex import latex_table
 from .scriptnotifier import ScriptNotifier
+from .statistics import postsim
