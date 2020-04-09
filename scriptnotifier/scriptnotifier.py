@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*
 # public
 '''scriptnotifier.py: Contains a status alert class for scripts'''
+# the following __future__ imports makes this script theoretically workable with Python 2
 from __future__ import absolute_import, division, print_function
 __author__ = 'Tyler Acorn'
 __date__ = '2017'
